@@ -21,6 +21,11 @@ func main() {
 	log.Println("==== ssl-webhook ====")
 
 	r := gin.Default()
+	r.LoadHTMLGlob("view/*")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(200, "index.html", nil)
+	})
+
 	r.GET(src.CONTEXT_PATH+"/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
@@ -28,7 +33,7 @@ func main() {
 	})
 
 	src.Initialize(r)
-
+	fmt.Println("http://localhost:10010/")
 	fmt.Printf("http://localhost:10010%s/ping\n", src.CONTEXT_PATH)
 	r.Run(":10010")
 }
