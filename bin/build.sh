@@ -4,5 +4,7 @@ export GOOS=linux
 export GOARCH=amd64
 
 
+rm ./ssl-webhook
+
 # 不加文件名, 生成和当前路径一致的名字
 go build
