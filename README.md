@@ -22,7 +22,21 @@ chmod 777 ssl-webhook
 启动服务（后台）
 ```shell
 ./ssl-webhook -d=true
+#或传递token
+CALLBACK_TOKEN=<your_callback_token> ./ssl-webhook -d=true
 ```
+或配置文件中配置
+执行程序统计目录
+```shell
+cat > config.yaml << EOF
+# 这是上下文路径, 缺省 sslwebhook
+#CONTEXT_PATH: "/sslwebhook"
+# 这是回调令牌
+CALLBACK_TOKEN: <your_callback_token>
+# 这是Nginx证书的基本路径, 缺省 /etc/nginx/cert
+#NGINX_CERT_BASE_PATH: "/etc/nginx/cert"
+EOF
+````
 
 4. 部署证书
 
@@ -36,6 +50,6 @@ cert.key // 私钥
 fullchain.cer // 证书
 ```
 
-改域名下原有证书目录，重命名，添加当时时间后缀备份。
+该域名下原有证书目录，重命名，添加当时时间后缀备份。
 
 ![image.png](https://s2.loli.net/2022/11/19/5kI1PARGSaHs32j.png)

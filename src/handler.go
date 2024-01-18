@@ -16,21 +16,25 @@ import (
 )
 
 func Initialize(engine *gin.Engine) {
-	engine.GET(CONTEXT_PATH+"/hello", func(c *gin.Context) {
+	config := GetConfig()
+	engine.GET(config.ContextPath+"/hello", func(c *gin.Context) {
+		log.Println("/hello")
 		c.JSON(http.StatusOK, gin.H{
 			"message": "world",
 		})
 	})
 
-	ohttps := engine.Group(CONTEXT_PATH + "/ohttps")
+	ohttps := engine.Group(config.ContextPath + "/ohttps")
 	{
 		ohttps.GET("/hello", func(c *gin.Context) {
+			log.Println("/ohttps/hello")
 			c.JSON(http.StatusOK, gin.H{
 				"success": "hello ohttps",
 			})
 		})
 		// [OHTTPS - 免费HTTPS证书、自动更新、自动部署](https://ohttps.com/docs/cloud/webhook/webhook)
 		ohttps.POST("/deploy", func(c *gin.Context) {
+			log.Println("/ohttps/deploy")
 			//request := make(map[string]interface{})
 			var request OhttpsSslDeployRequest
 			fmt.Println(c.Query("a")) // url 参数
@@ -47,7 +51,7 @@ func Initialize(engine *gin.Engine) {
 			log.Println(request.Payload.CertificateName, request.Payload.CertificateDomains)
 			// 验签
 			md5 := md5.New()
-			io.WriteString(md5, strconv.FormatInt(request.Timestamp, 10)+":"+CALLBACK_TOKEN)
+			io.WriteString(md5, strconv.FormatInt(request.Timestamp, 10)+":"+config.CallbackToken)
 			md5sum := hex.EncodeToString(md5.Sum(nil))
 			if md5sum != request.Sign {
 				c.JSON(http.StatusInternalServerError, gin.H{
@@ -66,7 +70,7 @@ func Initialize(engine *gin.Engine) {
 					// 泛域名
 					domainCertPath = domain[2:]
 				}
-				tmpCertPath := NGINX_CERT_BASE_PATH + "/" + domainCertPath + ".tmp"
+				tmpCertPath := config.NginxCertBasePath + "/" + domainCertPath + ".tmp"
 				os.MkdirAll(tmpCertPath, os.ModePerm)
 
 				certKeyFile, _ := os.OpenFile(tmpCertPath+"/cert.key", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
@@ -78,7 +82,7 @@ func Initialize(engine *gin.Engine) {
 				fullchainFile.WriteString(request.Payload.CertificateFullchainCerts)
 
 				// 原目录备份
-				os.Rename(NGINX_CERT_BASE_PATH+"/"+domainCertPath, NGINX_CERT_BASE_PATH+"/"+domainCertPath+"."+time.Now().Format("20060102150405"))
+				os.Rename(config.NginxCertBasePath+"/"+domainCertPath, config.NginxCertBasePath+"/"+domainCertPath+"."+time.Now().Format("20060102150405"))
 				// 启用新的
 				os.Rename(tmpCertPath, tmpCertPath[:len(tmpCertPath)-4])
 				log.Printf("部署 %s 成功, 路径: %s\n", domain, tmpCertPath[:len(tmpCertPath)-4])
@@ -95,7 +99,7 @@ func Initialize(engine *gin.Engine) {
 		})
 	}
 
-	nginx := engine.Group(CONTEXT_PATH + "/nginx")
+	nginx := engine.Group(config.ContextPath + "/nginx")
 	{
 		//nginx -s reload
 		nginx.GET("/reload", func(c *gin.Context) {
