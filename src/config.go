@@ -8,7 +8,9 @@ import (
 )
 
 type Config struct {
-	ContextPath       string `yaml:"CONTEXT_PATH"`
+	ContextPath string `yaml:"CONTEXT_PATH"`
+	// 回调http端口，缺省 10010
+	Port              int    `yaml:"PORT"`
 	CallbackToken     string `yaml:"CALLBACK_TOKEN"`
 	NginxCertBasePath string `yaml:"NGINX_CERT_BASE_PATH"`
 }
@@ -21,14 +23,19 @@ func GetConfig() *Config {
 	}
 	config := Config{
 		ContextPath:       "/sslwebhook",
+		Port:              10010,
 		CallbackToken:     os.Getenv("CALLBACK_TOKEN"),
 		NginxCertBasePath: "/etc/nginx/cert",
 	}
 	configFile, err := os.Open("config.yaml")
+	if os.IsNotExist(err) {
+		configFile, err = os.Open("config.yml")
+	}
 	if err != nil {
 		//log.Fatal(err)
-		log.Println("config.yaml not found, use default config")
+		log.Println("=> config.yaml not found, use default config")
 	} else {
+		log.Printf("=> `%s` is found\n", configFile.Name())
 		bytes, _ := ioutil.ReadAll(configFile)
 		yaml.Unmarshal(bytes, &config)
 	}

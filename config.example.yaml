@@ -1,6 +1,7 @@
 # 这是上下文路径
 #CONTEXT_PATH: "/sslwebhook"
+#PORT: 10010
 # 这是回调令牌
-CALLBACK_TOKEN: "7c3d7028e6a9244bc3f6c891defe1627"
+CALLBACK_TOKEN: "<your callback token, eg: 7c3d7028e6a9244bc3f6c891defe1627>"
 # 这是Nginx证书的基本路径
 #NGINX_CERT_BASE_PATH: "/etc/nginx/cert"

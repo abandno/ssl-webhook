@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"ssl-webhook/src"
+	"strconv"
 )
 
 //go:embed view
@@ -42,9 +43,10 @@ func main() {
 	})
 
 	src.Initialize(r)
-	fmt.Println("http://localhost:10010/")
-	fmt.Printf("http://localhost:10010%s/ping\n", config.ContextPath)
-	r.Run(":10010")
+	port := strconv.Itoa(config.Port)
+	fmt.Printf("http://localhost:%s/\n", port)
+	fmt.Printf("http://localhost:%s%s/ping\n", port, config.ContextPath)
+	r.Run(":" + port)
 }
 
 func configLog() {
