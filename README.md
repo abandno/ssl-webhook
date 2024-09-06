@@ -22,16 +22,16 @@ chmod 777 ssl-webhook
 启动服务（后台）
 ```shell
 ./ssl-webhook -d=true
-#或传递token
+#支持传递调用的token
 CALLBACK_TOKEN=<your_callback_token> ./ssl-webhook -d=true
 ```
 或配置文件中配置
-执行程序统计目录
+
 ```shell
 cat > config.yaml << EOF
 # 这是上下文路径, 缺省 sslwebhook
 #CONTEXT_PATH: "/sslwebhook"
-# 这是回调令牌
+# 这是回调令牌，支持命令行传入
 CALLBACK_TOKEN: <your_callback_token>
 # 这是Nginx证书的基本路径, 缺省 /etc/nginx/cert
 #NGINX_CERT_BASE_PATH: "/etc/nginx/cert"
@@ -43,7 +43,7 @@ EOF
 证书管理》点选要部署的证书》部署证书
 
 结果：
-会在 nginx 证书目录下（"/etc/nginx/cert"），生成对应域名的目录（域名即使目录名）。
+会在 nginx 证书目录下（"/etc/nginx/cert"），生成对应域名的目录（域名即是目录名）。
 内含两个文件：
 ```
 cert.key // 私钥
