@@ -85,7 +85,7 @@ func Initialize(engine *gin.Engine) {
 				os.Rename(config.NginxCertBasePath+"/"+domainCertPath, config.NginxCertBasePath+"/"+domainCertPath+"."+time.Now().Format("20060102150405"))
 				// 启用新的
 				os.Rename(tmpCertPath, tmpCertPath[:len(tmpCertPath)-4])
-				log.Printf("部署 %s 成功, 路径: %s\n", domain, tmpCertPath[:len(tmpCertPath)-4])
+				log.Printf("==> 部署 `%s` 成功, 路径: `%s`\n", domain, tmpCertPath[:len(tmpCertPath)-4])
 			}
 
 			// nginx reload 新证书才能生效
